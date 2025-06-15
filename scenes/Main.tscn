@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://dd4i8e68mlvpx"]
+
+[ext_resource type="PackedScene" uid="uid://c1w0cqxquq6b" path="res://scenes/PlayerCamera.tscn" id="2_0bbpv"]
+[ext_resource type="PackedScene" uid="uid://dodlo3qqb3hnt" path="res://scenes/RoadGenerator.tscn" id="2_rvslj"]
+[ext_resource type="PackedScene" uid="uid://dyofl7vpe3qx3" path="res://scenes/PopulationDensityGenerator.tscn" id="3_0bbpv"]
+[ext_resource type="PackedScene" uid="uid://ck3powjya2sfg" path="res://scenes/HighwayGenerator.tscn" id="4_rarhs"]
+
+[node name="Main" type="Node2D"]
+
+[node name="PlayerCamera" parent="." instance=ExtResource("2_0bbpv")]
+
+[node name="RoadGenerator" parent="." instance=ExtResource("2_rvslj")]
+
+[node name="PopulationDensityGenerator" parent="." instance=ExtResource("3_0bbpv")]
+
+[node name="HighwayGenerator" parent="." node_paths=PackedStringArray("population_density") instance=ExtResource("4_rarhs")]
+population_density = NodePath("../PopulationDensityGenerator")
