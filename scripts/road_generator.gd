@@ -1,5 +1,5 @@
-# extends Node2D
-# class_name road_generator
+extends Node2D
+class_name road_generator
 
 # # Basic parameters
 # @export var grid_size: int = 10  # Number of cells in the grid

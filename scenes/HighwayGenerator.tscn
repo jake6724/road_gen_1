@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ck3powjya2sfg"]
 
-[ext_resource type="Script" path="res://scripts/highway_generator.gd" id="1_ednwu"]
+[ext_resource type="Script" uid="uid://cgn4brhfhx1ii" path="res://scripts/highway_generator.gd" id="1_ednwu"]
 
 [node name="HighwayGenerator" type="Node2D"]
 script = ExtResource("1_ednwu")
