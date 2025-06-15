@@ -8,7 +8,7 @@ var detail_noise: FastNoiseLite = FastNoiseLite.new()
 func _ready():
 	base_noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	base_noise.seed = noise_seed
-	base_noise.frequency = 0.05
+	base_noise.frequency = 0.01
 
 	detail_noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	detail_noise.seed = noise_seed
