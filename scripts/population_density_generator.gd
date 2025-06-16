@@ -8,11 +8,12 @@ var detail_noise: FastNoiseLite = FastNoiseLite.new()
 func _ready():
 	base_noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	base_noise.seed = noise_seed
-	base_noise.frequency = 0.01
+	base_noise.frequency = 0.001
 
-	detail_noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	detail_noise.seed = noise_seed
-	detail_noise.frequency = .2
+	# detail_noise.noise_type = FastNoiseLite.TYPE_PERLIN
+	# detail_noise.seed = noise_seed
+	# detail_noise.frequency = .2
+	
 	visualize_noise()
 
 @export var width: int = 1000
@@ -24,11 +25,12 @@ func visualize_noise() -> void:
 	for x in range(width):
 		for y in range(height):
 			var base_noise_value: float = base_noise.get_noise_2d(x, y)
-			var detail_noise_value: float = detail_noise.get_noise_2d(x, y)
-			var combined_value: float = base_noise_value + detail_noise_value
+			# var detail_noise_value: float = detail_noise.get_noise_2d(x, y)
+			# var combined_value: float = base_noise_value + detail_noise_value
 			# Normalize from [-1, 1] to [0, 1]
-			var normalized_combined_value = (combined_value + 1.0) * 0.5
-			image.set_pixel(x, y, Color(normalized_combined_value, normalized_combined_value, normalized_combined_value))
+			# var normalized_combined_value = (combined_value + 1.0) * 0.5
+			var normalized_base_value = (base_noise_value + 1.0) * 0.5
+			image.set_pixel(x, y, Color(normalized_base_value, normalized_base_value, normalized_base_value))
 	var tex := ImageTexture.create_from_image(image)
 	texture_rect = TextureRect.new()
 	texture_rect.texture = tex

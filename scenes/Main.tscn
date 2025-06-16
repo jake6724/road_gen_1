@@ -13,4 +13,5 @@
 
 [node name="PopulationDensityGenerator" parent="." instance=ExtResource("3_0bbpv")]
 
-[node name="HighwayGenerator" parent="." instance=ExtResource("4_rarhs")]
+[node name="HighwayGenerator" parent="." node_paths=PackedStringArray("population_density") instance=ExtResource("4_rarhs")]
+population_density = NodePath("../PopulationDensityGenerator")

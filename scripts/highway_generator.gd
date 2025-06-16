@@ -20,14 +20,22 @@ func find_population_centers() -> Array:
 	for x in range(map_height):
 		for y in range(map_width):
 			var base_noise_value: float = population_density.base_noise.get_noise_2d(x,y)
-			var detail_noise_value: float = population_density.detail_noise.get_noise_2d(x,y)
-			var combined_noise_value: float = base_noise_value + detail_noise_value
+			# var detail_noise_value: float = population_density.detail_noise.get_noise_2d(x,y)
+			# var combined_noise_value: float = base_noise_value + detail_noise_value
 			if min_heap.data.size() < num_population_centers:
-				min_heap.push([combined_noise_value, Vector2(x,y)])
-			else:
-				if combined_noise_value > min_heap.peek()[0]:
+				min_heap.push([base_noise_value, Vector2(x,y)])
+
+			elif base_noise_value > min_heap.peek()[0]:
+				# Check if it is too close to other population centers
+				var point: Vector2 = Vector2(x, y)
+				var count:int = 0
+				for pc in min_heap.data:
+					if point.distance_to(pc[1]) > 100:
+						count += 1
+				
+				if count == min_heap.data.size():
 					min_heap.pop()
-					min_heap.push([combined_noise_value, Vector2(x,y)])
+					min_heap.push([base_noise_value, Vector2(x,y)])
 
 	# Normalize population center density values
 	var min_density = min_heap.data.min()[0]
@@ -42,6 +50,8 @@ func find_population_centers() -> Array:
 
 		# Add markers to world
 		add_population_center_marker(point, normalized_value)
+
+		debug_value(value, normalized_value, point)
 		
 	return min_heap.data
 
@@ -52,3 +62,9 @@ func add_population_center_marker(point: Vector2, normalized_density_value: floa
 	new_marker.position = point
 	new_marker.scale = marker_scale
 	add_child(new_marker)
+
+func debug_value(value, normalized_value, point) -> void:
+	print("=======================================")
+	print("Value: ", value)
+	print("Normalized Value: ", normalized_value)
+	print("Point: ", point)
