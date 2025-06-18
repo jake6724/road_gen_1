@@ -1,8 +1,17 @@
 extends Node2D
 class_name HighwayGenerator
 
+"""
+NOTES
+
+- Highways that generate close to another highway should use the same on instead, and then branch off
+
+"""
+
 @export var population_density: PopulationDensityGenerator
 var marker: PackedScene = preload("res://scenes/Marker.tscn")
+var highway_sample_marker: PackedScene = preload("res://scenes/HighwaySampleMarker.tscn")
+var target_marker: PackedScene = preload("res://scenes/TargetMarker.tscn")
 
 var map_height: int = 1000
 var map_width: int = 1000
@@ -16,6 +25,7 @@ func _ready():
 ## Return a sorted array containing pairs of (density_value:float, coordinates:Vector2)
 func find_population_centers() -> Array:
 	var num_population_centers: int = 10
+	var population_center_min_distance: int = 200
 	# Populate min heap
 	for x in range(map_height):
 		for y in range(map_width):
@@ -26,11 +36,11 @@ func find_population_centers() -> Array:
 				min_heap.push([base_noise_value, Vector2(x,y)])
 
 			elif base_noise_value > min_heap.peek()[0]:
-				# Check if it is too close to other population centers
+				# Check if current point is too close to other population centers
 				var point: Vector2 = Vector2(x, y)
-				var count:int = 0
+				var count: int = 0
 				for pc in min_heap.data:
-					if point.distance_to(pc[1]) > 100:
+					if point.distance_to(pc[1]) > population_center_min_distance:
 						count += 1
 				
 				if count == min_heap.data.size():
@@ -51,9 +61,73 @@ func find_population_centers() -> Array:
 		# Add markers to world
 		add_population_center_marker(point, normalized_value)
 
-		debug_value(value, normalized_value, point)
+		# debug_value(value, normalized_value, point)
+	
+	for pair in min_heap.data.slice(0, min_heap.data.size()-1):
+		print("From: ", min_heap.data[-1][1], " To: ", pair[1])
+		build_highway(min_heap.data[-1][1], pair[1])
 		
 	return min_heap.data
+
+func build_highway(start_point: Vector2, target_point: Vector2):
+	# Initialize highway Line2D
+	var highway: Line2D = create_new_highway_line2d(start_point)
+	
+	while start_point.distance_to(target_point) > 100:
+		var best_path_point: Vector2 = Vector2.ZERO
+		var highest_weighted_value: float = -100.0
+		
+		var degree_range: float = 5 # Used to create a cone on left and right of the direct angle to target
+		var degree_step_size: float = 1
+		var angle_to_target = start_point.angle_to_point(target_point)
+		var degree_min: float = rad_to_deg(angle_to_target) - degree_range
+		var degree_max: float = rad_to_deg(angle_to_target) + degree_range
+
+		for degree in range(degree_min, degree_max, degree_step_size): # Poll a range of angles
+			var num_samples: int = 100
+			var angle: float= deg_to_rad(degree)
+			var direction: Vector2 = Vector2(cos(angle), sin(angle)).normalized()
+			var direction_total: float = 0
+
+			# Poll along the direction of the current angle
+			# i is the distance from the starting point (1 pixel at a time)
+			for i in range(1, num_samples):
+				# print(i)
+				var pos: Vector2 = start_point + (direction * i)
+				var value: float = population_density.base_noise.get_noise_2d(pos[0], pos[1])
+				var weight: float = 1 / i # (1 / distance)
+				var weighted_value: float = value * weight
+				direction_total += weighted_value
+
+			if direction_total > highest_weighted_value:
+				highest_weighted_value = direction_total
+				best_path_point = start_point + (direction * num_samples)
+		
+		# Update start_point and re-calculate sampling angle range
+		start_point = best_path_point
+		angle_to_target = start_point.angle_to_point(target_point)
+		degree_min = rad_to_deg(angle_to_target) - degree_range
+		degree_max = rad_to_deg(angle_to_target) + degree_range
+
+		# Add to highway Line2D
+		highway.add_point(best_path_point)
+
+	# Fill in the remaining distance
+	# TODO: This needs to be improved
+	highway.add_point(target_point)
+
+## Create and return a new Line2D to represent a highway
+func create_new_highway_line2d(start_point) -> Line2D: 
+	var highway: Line2D = Line2D.new()
+	highway.width = 10.0
+	var highway_color: Color = GlobalData.available_highway_colors.pick_random()
+	highway.default_color = highway_color
+	GlobalData.available_highway_colors.remove_at(GlobalData.available_highway_colors.find(highway_color))
+
+	highway.add_point(start_point)
+	add_child(highway)
+
+	return highway
 
 func add_population_center_marker(point: Vector2, normalized_density_value: float) -> void:
 	var scale_value: float = (normalized_density_value * .7) + 0.3

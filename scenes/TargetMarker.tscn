@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://rr6l7ypubno5"]
+
+[ext_resource type="Texture2D" uid="uid://ccgs8ymk1nifb" path="res://assets/water.png" id="1_r1sfg"]
+
+[node name="TargetMarker" type="Sprite2D"]
+texture = ExtResource("1_r1sfg")

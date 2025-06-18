@@ -16,8 +16,8 @@ func _ready():
 	
 	visualize_noise()
 
-@export var width: int = 1000
-@export var height: int = 1000
+@export var width: int = 2000
+@export var height: int = 2000
 var texture_rect: TextureRect
 
 func visualize_noise() -> void:

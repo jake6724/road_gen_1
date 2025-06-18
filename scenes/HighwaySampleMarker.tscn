@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://u8dhxle2rkch"]
+
+[ext_resource type="Texture2D" uid="uid://lkskk8okqcbu" path="res://assets/highway_sample_marker.png" id="1_0ys8c"]
+
+[node name="HighwaySampleMarker" type="Sprite2D"]
+texture = ExtResource("1_0ys8c")

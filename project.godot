@@ -15,6 +15,14 @@ run/main_scene="uid://dd4i8e68mlvpx"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GlobalData="*res://scripts/global_data.gd"
+
+[debug]
+
+gdscript/warnings/integer_division=0
+
 [input]
 
 move_camera_up={

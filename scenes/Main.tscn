@@ -8,6 +8,7 @@
 [node name="Main" type="Node2D"]
 
 [node name="PlayerCamera" parent="." instance=ExtResource("2_0bbpv")]
+position = Vector2(576, 324)
 
 [node name="RoadGenerator" parent="." instance=ExtResource("2_rvslj")]
 
