@@ -19,7 +19,7 @@ NOTES
 ## How much to adjust when sweeping through `degree_range`
 @export var degree_step: float = 1 
 ## The length of an individual highway segment, which are combined to create the final highway
-@export var num_samples: int = 100 
+@export var num_samples: int = 25 
 
 var marker: PackedScene = preload("res://scenes/Marker.tscn")
 var highway_sample_marker: PackedScene = preload("res://scenes/HighwaySampleMarker.tscn")
